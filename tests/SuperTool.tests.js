@@ -3,7 +3,6 @@ import { expect } from 'chai'
 import SuperTool from '../lib/SuperTool'
 
 describe('SuperTool', function () {
-
   let tool
 
   beforeEach(function () {
