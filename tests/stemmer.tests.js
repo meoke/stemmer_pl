@@ -4,16 +4,16 @@ import { getStem, removeNouns } from '../lib/stemmer'
 // import getStem from '../lib/stemmer'
 
 describe('stemmer end to end tests', function () {
-  // describe('returns the identical word if the given word is its stem', function() {
-  //   const expectIdentical = (word) => expect(getStem(word)).to.equal(word)
-  //   const words = ['i', 'o', 'nad', 'też', 'nie']
+  describe('returns the identical word if the given word is its stem', function() {
+    const expectIdentical = (word) => expect(getStem(word)).to.equal(word)
+    const words = ['i', 'o', 'nad', 'też', 'nie']
 
-  //   for (const word of words) {
-  //     it(`stem equal to (${word})`, function () {
-  //       expectIdentical(word)
-  //     })
-  //   }
-  // })
+    for (const word of words) {
+      it(`stem equal to (${word})`, function () {
+        expectIdentical(word)
+      })
+    }
+  })
 
   describe('returns empty string if the given word is empty, null or not a string', function () {
     const expectEmpty = (word) => expect(getStem(word)).to.equal('')
