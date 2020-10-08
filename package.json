@@ -64,5 +64,10 @@
     "nyc": "^15.0.1",
     "snazzy": "^8.0.0",
     "standard": "^14.3.3"
+  },
+  "standard": {
+    "ignore": [
+      "/docs/*"
+    ]
   }
 }

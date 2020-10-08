@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { getStem } from '../lib/stemmer'
+import { getStem, removeNouns } from '../lib/stemmer'
 // import getStem from '../lib/stemmer'
 
 describe('stemmer end to end tests', function () {
@@ -88,17 +88,44 @@ describe('stemmer end to end tests', function () {
   // })
 })
 
-describe('stemmer endings removement', function () {
-  describe('remove nouns', function () {
-    const expectStem = (word, stem) => expect(getStem(word)).to.equal(stem)
-    const words = [['organizacja', 'organiz'],
-      ['organizacją', 'organiz'],
-      ['organizacji', 'organiz']
+describe('endings removal', function () {
+  describe('noun endings removal', function () {
+    const expectWord = (fullWord, cutEnding) => expect(removeNouns(fullWord)).to.equal(cutEnding)
+
+    const testCases = [
+      ['should remove "acja" from word > 7 chars', 'organizacja', 'organiz'],
+      ['should remove "acją" from word > 7 chars', 'organizacją', 'organiz'],
+      ['should remove "acji" from word > 7 chars', 'organizacji', 'organiz'],
+
+      ['should remove "acja" from word > 6 chars', 'kolacja', 'kol'],
+      ['should remove "acji" from word > 6 chars', 'kolacji', 'kol'],
+      ['should remove "acją" from word > 6 chars', 'kolacją', 'kol'],
+      ['should remove "tach" from word > 6 chars', 'absolutach', 'absolu'],
+      ['should remove "anie" from word > 6 chars', 'rozebranie', 'rozebr'],
+      ['should remove "enie" from word > 6 chars', 'seplenienie', 'sepleni'],
+      ['should remove "eniu" from word > 6 chars', 'seplenieniu', 'sepleni'],
+      ['should remove "aniu" from word > 6 chars', 'rozebraniu', 'rozebr'],
+
+      ['should remove "ka" from word > 6 chars with ending "tyka"', 'matematyka', 'matematy'],
+
+      ['should remove "ach" from word > 5 chars', 'postrach', 'postr'],
+      ['should remove "ami" from word > 5 chars', 'postrachami', 'postrach'],
+      ['should remove "nia" from word > 5 chars', 'ogłuszania', 'ogłusza'],
+      ['should remove "niu" from word > 5 chars', 'fooniu', 'foo'],
+      ['should remove "cia" from word > 5 chars', 'pobicia', 'pobi'],
+      ['should remove "ciu" from word > 5 chars', 'pobiciu', 'pobi'],
+
+      ['should remove "cji" from word > 5 chars', 'gracji', 'grac'],
+      ['should remove "cja" from word > 5 chars', 'gracja', 'grac'],
+      ['should remove "cją" from word > 5 chars', 'gracją', 'grac'],
+
+      ['should remove "ce" from word > 5 chars', 'manowce', 'manow'],
+      ['should remove "ta" from word > 5 chars', 'ochota', 'ocho']
     ]
 
-    for (const [word, stem] of words) {
-      it(`get correct noun stem (${word} -> ${stem})`, function () {
-        expectStem(word, stem)
+    for (const [description, fullWord, cutEnding] of testCases) {
+      it(description, function () {
+        expectWord(fullWord, cutEnding)
       })
     }
   })
