@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { getStem, removeNouns, removeDiminutive, removeAdjectiveEnds, removeVerbsEnds} from '../lib/stemmer'
+import { getStem, removeNouns, removeDiminutive, removeAdjectiveEnds, removeVerbsEnds, removeAdverbsEnds} from '../lib/stemmer'
 // import getStem from '../lib/stemmer'
 
 describe('stemmer end to end tests', function () {
@@ -214,6 +214,23 @@ describe('prefixes and suffixes removal', function () {
       ['should remove "ić" from verb > 3 chars', 'zrobić', 'zrob'],
       ['should remove "ąc" from verb > 3 chars', 'będąc', 'będ'],
 
+    ]
+
+    for (const [description, fullWord, expectedWord] of testCases) {
+      it(description, function () {
+        expectWord(fullWord, expectedWord)
+      })
+    }
+  })
+
+  describe('adverb suffix removal', function () {
+    const expectWord = (fullWord, expectedWord) => expect(removeAdverbsEnds(fullWord)).to.equal(expectedWord)
+
+    const testCases = [     
+      ['should remove "ie" from adverb > 4 chars ending with "nie"', 'grzecznie', 'grzeczn'],
+      ['should remove "ie" from adverb > 4 chars ending with "wie"', 'ckliwie', 'ckliw'],
+      
+      ['should remove "ze" from adverb > 4 chars ending with "rze"', 'dobrze', 'dobr'],
     ]
 
     for (const [description, fullWord, expectedWord] of testCases) {
