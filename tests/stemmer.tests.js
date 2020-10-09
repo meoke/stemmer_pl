@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { getStem, removeNouns } from '../lib/stemmer'
+import { getStem, removeNouns, removeDiminutive} from '../lib/stemmer'
 // import getStem from '../lib/stemmer'
 
 describe('stemmer end to end tests', function () {
@@ -93,34 +93,59 @@ describe('endings removal', function () {
     const expectWord = (fullWord, cutEnding) => expect(removeNouns(fullWord)).to.equal(cutEnding)
 
     const testCases = [
-      ['should remove "acja" from word > 7 chars', 'organizacja', 'organiz'],
-      ['should remove "acją" from word > 7 chars', 'organizacją', 'organiz'],
-      ['should remove "acji" from word > 7 chars', 'organizacji', 'organiz'],
+      ['should remove "acja" from noun > 7 chars', 'organizacja', 'organiz'],
+      ['should remove "acją" from noun > 7 chars', 'organizacją', 'organiz'],
+      ['should remove "acji" from noun > 7 chars', 'organizacji', 'organiz'],
 
-      ['should remove "acja" from word > 6 chars', 'kolacja', 'kol'],
-      ['should remove "acji" from word > 6 chars', 'kolacji', 'kol'],
-      ['should remove "acją" from word > 6 chars', 'kolacją', 'kol'],
-      ['should remove "tach" from word > 6 chars', 'absolutach', 'absolu'],
-      ['should remove "anie" from word > 6 chars', 'rozebranie', 'rozebr'],
-      ['should remove "enie" from word > 6 chars', 'seplenienie', 'sepleni'],
-      ['should remove "eniu" from word > 6 chars', 'seplenieniu', 'sepleni'],
-      ['should remove "aniu" from word > 6 chars', 'rozebraniu', 'rozebr'],
+      ['should remove "acja" from noun > 6 chars', 'kolacja', 'kol'],
+      ['should remove "acji" from noun > 6 chars', 'kolacji', 'kol'],
+      ['should remove "acją" from noun > 6 chars', 'kolacją', 'kol'],
+      ['should remove "tach" from noun > 6 chars', 'absolutach', 'absolu'],
+      ['should remove "anie" from noun > 6 chars', 'rozebranie', 'rozebr'],
+      ['should remove "enie" from noun > 6 chars', 'seplenienie', 'sepleni'],
+      ['should remove "eniu" from noun > 6 chars', 'seplenieniu', 'sepleni'],
+      ['should remove "aniu" from noun > 6 chars', 'rozebraniu', 'rozebr'],
 
-      ['should remove "ka" from word > 6 chars with ending "tyka"', 'matematyka', 'matematy'],
+      ['should remove "ka" from noun > 6 chars with ending "tyka"', 'matematyka', 'matematy'],
 
-      ['should remove "ach" from word > 5 chars', 'postrach', 'postr'],
-      ['should remove "ami" from word > 5 chars', 'postrachami', 'postrach'],
-      ['should remove "nia" from word > 5 chars', 'ogłuszania', 'ogłusza'],
-      ['should remove "niu" from word > 5 chars', 'fooniu', 'foo'],
-      ['should remove "cia" from word > 5 chars', 'pobicia', 'pobi'],
-      ['should remove "ciu" from word > 5 chars', 'pobiciu', 'pobi'],
+      ['should remove "ach" from noun > 5 chars', 'postrach', 'postr'],
+      ['should remove "ami" from noun > 5 chars', 'postrachami', 'postrach'],
+      ['should remove "nia" from noun > 5 chars', 'ogłuszania', 'ogłusza'],
+      ['should remove "niu" from noun > 5 chars', 'fooniu', 'foo'],
+      ['should remove "cia" from noun > 5 chars', 'pobicia', 'pobi'],
+      ['should remove "ciu" from noun > 5 chars', 'pobiciu', 'pobi'],
 
-      ['should remove "cji" from word > 5 chars', 'gracji', 'grac'],
-      ['should remove "cja" from word > 5 chars', 'gracja', 'grac'],
-      ['should remove "cją" from word > 5 chars', 'gracją', 'grac'],
+      ['should remove "cji" from noun > 5 chars', 'gracji', 'grac'],
+      ['should remove "cja" from noun > 5 chars', 'gracja', 'grac'],
+      ['should remove "cją" from noun > 5 chars', 'gracją', 'grac'],
 
-      ['should remove "ce" from word > 5 chars', 'manowce', 'manow'],
-      ['should remove "ta" from word > 5 chars', 'ochota', 'ocho']
+      ['should remove "ce" from noun > 5 chars', 'manowce', 'manow'],
+      ['should remove "ta" from noun > 5 chars', 'ochota', 'ocho'],
+    ]
+
+    for (const [description, fullWord, cutEnding] of testCases) {
+      it(description, function () {
+        expectWord(fullWord, cutEnding)
+      })
+    }
+  })
+
+  describe('noun diminutives removal', function () {
+    const expectWord = (fullWord, cutEnding) => expect(removeDiminutive(fullWord)).to.equal(cutEnding)
+
+    const testCases = [     
+      ['should remove "eczek" from noun > 6 chars', 'stołeczek', 'stoł'],
+      ['should remove "iczek" from noun > 6 chars', 'stoliczek', 'stol'],
+      ['should remove "iszek" from noun > 6 chars', 'modliszek', 'modl'],
+      ['should remove "aszek" from noun > 6 chars', 'wujaszek', 'wuj'],
+      ['should remove "uszek" from noun > 6 chars', 'kłapouszek', 'kłapo'],
+      
+      ['should remove "enek" from noun > 6 chars', 'aborygenek', 'aborygen'],
+      ['should remove "ejek" from noun > 6 chars', 'pigmejek', 'pigmej'],
+      ['should remove "erek" from noun > 6 chars', 'koperek', 'koper'],
+
+      ['should remove "ek" from noun > 4 chars', 'berek', 'ber'],
+      ['should remove "ak" from noun > 4 chars', 'lilak', 'lil'],
     ]
 
     for (const [description, fullWord, cutEnding] of testCases) {
