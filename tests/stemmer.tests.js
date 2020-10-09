@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { getStem, removeNouns, removeDiminutive} from '../lib/stemmer'
+import { getStem, removeNouns, removeDiminutive, removeAdjectiveEnds} from '../lib/stemmer'
 // import getStem from '../lib/stemmer'
 
 describe('stemmer end to end tests', function () {
@@ -88,9 +88,9 @@ describe('stemmer end to end tests', function () {
   // })
 })
 
-describe('endings removal', function () {
-  describe('noun endings removal', function () {
-    const expectWord = (fullWord, cutEnding) => expect(removeNouns(fullWord)).to.equal(cutEnding)
+describe('prefixes and suffixes removal', function () {
+  describe('noun suffixes removal', function () {
+    const expectWord = (fullWord, withoutSuffix) => expect(removeNouns(fullWord)).to.equal(withoutSuffix)
 
     const testCases = [
       ['should remove "acja" from noun > 7 chars', 'organizacja', 'organiz'],
@@ -123,15 +123,15 @@ describe('endings removal', function () {
       ['should remove "ta" from noun > 5 chars', 'ochota', 'ocho'],
     ]
 
-    for (const [description, fullWord, cutEnding] of testCases) {
+    for (const [description, fullWord, withoutSuffix] of testCases) {
       it(description, function () {
-        expectWord(fullWord, cutEnding)
+        expectWord(fullWord, withoutSuffix)
       })
     }
   })
 
   describe('noun diminutives removal', function () {
-    const expectWord = (fullWord, cutEnding) => expect(removeDiminutive(fullWord)).to.equal(cutEnding)
+    const expectWord = (fullWord, withoutSuffix) => expect(removeDiminutive(fullWord)).to.equal(withoutSuffix)
 
     const testCases = [     
       ['should remove "eczek" from noun > 6 chars', 'stołeczek', 'stoł'],
@@ -148,9 +148,36 @@ describe('endings removal', function () {
       ['should remove "ak" from noun > 4 chars', 'lilak', 'lil'],
     ]
 
-    for (const [description, fullWord, cutEnding] of testCases) {
+    for (const [description, fullWord, withoutSuffix] of testCases) {
       it(description, function () {
-        expectWord(fullWord, cutEnding)
+        expectWord(fullWord, withoutSuffix)
+      })
+    }
+  })
+
+  describe('adjective prefix and suffix removal', function () {
+    const expectWord = (fullWord, expectedWord) => expect(removeAdjectiveEnds(fullWord)).to.equal(expectedWord)
+
+    const testCases = [     
+      ['should remove "naj" and "sze" from adjective > 7 chars', 'najlepsze', 'lep'],
+      ['should remove "naj" and "szy" from adjective > 7 chars', 'najlepszy', 'lep'],
+
+      ['should remove "naj" and "szych" from adjective > 7 chars', 'najlepszych', 'lep'],
+
+      ['should remove "czny" from adjective > 6 chars', 'stołeczny', 'stołe'],
+
+      ['should remove "owy" from adjective > 5 chars', 'bajkowy', 'bajk'],
+      ['should remove "owa" from adjective > 5 chars', 'bajkowa', 'bajk'],
+      ['should remove "owe" from adjective > 5 chars', 'bajkowe', 'bajk'],
+      ['should remove "ych" from adjective > 5 chars', 'bajkowych', 'bajkow'],
+      ['should remove "ego" from adjective > 5 chars', 'bajkowego', 'bajkow'],
+
+      ['should remove "ej" from adjective > 5 chars', 'stołecznej', 'stołeczn']
+    ]
+
+    for (const [description, fullWord, expectedWord] of testCases) {
+      it(description, function () {
+        expectWord(fullWord, expectedWord)
       })
     }
   })
