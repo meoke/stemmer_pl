@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { getStem, removeNouns, removeDiminutive, removeAdjectiveEnds} from '../lib/stemmer'
+import { getStem, removeNouns, removeDiminutive, removeAdjectiveEnds, removeVerbsEnds} from '../lib/stemmer'
 // import getStem from '../lib/stemmer'
 
 describe('stemmer end to end tests', function () {
@@ -173,6 +173,47 @@ describe('prefixes and suffixes removal', function () {
       ['should remove "ego" from adjective > 5 chars', 'bajkowego', 'bajkow'],
 
       ['should remove "ej" from adjective > 5 chars', 'stołecznej', 'stołeczn']
+    ]
+
+    for (const [description, fullWord, expectedWord] of testCases) {
+      it(description, function () {
+        expectWord(fullWord, expectedWord)
+      })
+    }
+  })
+
+  describe('verb suffix removal', function () {
+    const expectWord = (fullWord, expectedWord) => expect(removeVerbsEnds(fullWord)).to.equal(expectedWord)
+
+    const testCases = [     
+      ['should remove "bym" from verb > 5 chars', 'zrobiłbym', 'zrobił'],
+
+      ['should remove "esz" from verb > 5 chars', 'weźmiesz', 'weźmi'],
+      ['should remove "asz" from verb > 5 chars', 'słuchasz', 'słuch'],
+      ['should remove "cie" from verb > 5 chars', 'zróbcie', 'zrób'],
+      ['should remove "eść" from verb > 5 chars', 'pojeść', 'poj'],
+      ['should remove "aść" from verb > 5 chars', 'podkraść', 'podkr'],
+      ['should remove "łem" from verb > 5 chars', 'zrobiłem', 'zrobi'],
+      ['should remove "amy" from verb > 5 chars', 'kochamy', 'koch'],
+      ['should remove "emy" from verb > 5 chars', 'ugotujemy', 'ugotuj'],
+      
+      ['should remove "esz" from verb > 3 and <= 5 chars', 'zjesz', 'zje'],
+      ['should remove "asz" from verb > 3 and <= 5 chars', 'masz', 'ma'],
+      ['should remove "eść" from verb > 3 and <= 5 chars', 'jeść', 'je'],
+      ['should remove "aść" from verb > 3 and <= 5 chars', 'kraść', 'kra'],
+      ['should remove "eć" from verb > 3 and <= 5 chars', 'mieć', 'mi'],
+      ['should remove "ać" from verb > 3 and <= 5 chars', 'brać', 'br'],
+
+      ['should remove "aj" from verb > 3 and <= 5 chars', 'dawaj', 'dawa'],
+
+      ['should remove "ać" from verb > 3 chars', 'gotować', 'gotow'],
+      ['should remove "em" from verb > 3 chars', 'zjem', 'zj'],
+      ['should remove "am" from verb > 3 chars', 'zjadam', 'zjad'],
+      ['should remove "ał" from verb > 3 chars', 'gotował', 'gotow'],
+      ['should remove "ił" from verb > 3 chars', 'zrobił', 'zrob'],
+      ['should remove "ić" from verb > 3 chars', 'zrobić', 'zrob'],
+      ['should remove "ąc" from verb > 3 chars', 'będąc', 'będ'],
+
     ]
 
     for (const [description, fullWord, expectedWord] of testCases) {
