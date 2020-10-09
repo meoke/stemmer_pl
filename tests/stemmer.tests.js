@@ -26,66 +26,66 @@ describe('stemmer end to end tests', function () {
     }
   })
 
-  // describe('returns correct stems', function() {
-  //   const expectEqual = (word, stem) => expect(getStem(word)).to.equal(stem)
-  //   const words = [['Kariera', 'karier'],
-  //   ['na', 'na'],
-  //   ['językach', 'język'],
-  //   ['to', 'to'],
-  //   ['wydarzenie', 'wydarz'],
-  //   ['zorganizowane', 'zorganizowa'],
-  //   ['z', 'z'],
-  //   ['myślą', 'myśl'],
-  //   ['o', 'o'],
-  //   ['studentach', 'studen'],
-  //   ['i', 'i'],
-  //   ['absolwentach', 'absolwen'],
-  //   ['znających', 'zna'],
-  //   ['języki', 'język'],
-  //   ['obce', 'obc'],
-  //   ['na', 'na'],
-  //   ['poziomie', 'poziom'],
-  //   ['co', 'co'],
-  //   ['najmniej', 'mniej'],
-  //   ['Będą', 'Będ'],
-  //   ['oni', 'oni'],
-  //   ['mieli', 'mie'],
-  //   ['okazję', 'okazj'],
-  //   ['zastanowić', 'zastanow'],
-  //   ['się', 'się'],
-  //   ['nad', 'nad'],
-  //   ['kierunkami', 'kierunk'],
-  //   ['rozwoju', 'rozwoj'],
-  //   ['własnej', 'własn'],
-  //   ['kariery', 'karier'],
-  //   ['zawodowej', 'zawodow'],
-  //   ['w', 'w'],
-  //   ['oparciu', 'opar'],
-  //   ['o', 'o'],
-  //   ['informacje', 'informacj'],
-  //   ['na', 'na'],
-  //   ['temat', 'temat'],
-  //   ['możliwości', 'możliwoś'],
-  //   ['wykorzystania', 'wykorzysta'],
-  //   ['swoich', 'swoich'],
-  //   ['umiejętności', 'umiejętności'],
-  //   ['lingwistycznych', 'lingiwistyc'],
-  //   ['na', 'na'],
-  //   ['współczesnym', 'współczesn'],
-  //   ['rynku', 'rynk'],
-  //   ['pracy', 'prac'],
-  //   ['dlatego', 'dlatego'],
-  //   ['też', 'też'],
-  //   ['nie', 'nie'],
-  //   ['chcę', 'chc'],
-  // ];
+  describe('returns correct stems', function() {
+    const expectStem = (word, stem) => expect(getStem(word)).to.equal(stem)
+    const words = [['Kariera', 'karier'],
+    ['na', 'na'],
+    ['językach', 'język'],
+    ['to', 'to'],
+    ['wydarzenie', 'wydarz'],
+    ['zorganizowane', 'zorganizowa'],
+    ['z', 'z'],
+    ['myślą', 'myśl'],
+    ['o', 'o'],
+    ['studentach', 'studen'],
+    ['i', 'i'],
+    ['absolwentach', 'absolwen'],
+    ['znających', 'zna'],
+    ['języki', 'język'],
+    ['obce', 'obc'],
+    ['na', 'na'],
+    ['poziomie', 'poziom'],
+    ['co', 'co'],
+    ['najmniej', 'mniej'],
+    ['Będą', 'Będ'],
+    ['oni', 'oni'],
+    ['mieli', 'mie'],
+    ['okazję', 'okazj'],
+    ['zastanowić', 'zastanow'],
+    ['się', 'się'],
+    ['nad', 'nad'],
+    ['kierunkami', 'kierunk'],
+    ['rozwoju', 'rozwoj'],
+    ['własnej', 'własn'],
+    ['kariery', 'karier'],
+    ['zawodowej', 'zawodow'],
+    ['w', 'w'],
+    ['oparciu', 'opar'],
+    ['o', 'o'],
+    ['informacje', 'informacj'],
+    ['na', 'na'],
+    ['temat', 'temat'],
+    ['możliwości', 'możliwoś'],
+    ['wykorzystania', 'wykorzysta'],
+    ['swoich', 'swoich'],
+    ['umiejętności', 'umiejętności'],
+    ['lingwistycznych', 'lingiwistyc'],
+    ['na', 'na'],
+    ['współczesnym', 'współczesn'],
+    ['rynku', 'rynk'],
+    ['pracy', 'prac'],
+    ['dlatego', 'dlatego'],
+    ['też', 'też'],
+    ['nie', 'nie'],
+    ['chcę', 'chc'],
+  ];
 
-  //   for (const [word, stem] of words) {
-  //     it(`correct stem for (${word} -> ${stem})`, function () {
-  //       expectEmpty(word)
-  //     })
-  //   }
-  // })
+    for (const [word, stem] of words) {
+      it(`correct stem for (${word} -> ${stem})`, function () {
+        expectStem(word, stem)
+      })
+    }
+  })
 })
 
 describe('prefixes and suffixes removal', function () {
@@ -281,52 +281,80 @@ describe('prefixes and suffixes removal', function () {
   })
 
   describe('tools', function () {
-    it('should return true if word suffix is in provided list', function () {
-      expect(endsWithAny("paulina", ["na"])).to.equal(true)
+    describe('ends with any of the provided suffixes', function() {
+      it('should return true if word suffix is in provided list', function () {
+        expect(endsWithAny("paulina", ["na"])).to.equal(true)
+      })
+  
+      it('should return false if word suffix is not in provided list', function () {
+        expect(endsWithAny("paulina", ["foo"])).to.equal(false)
+      })
+  
+      it('should return false if provided list is empty', function () {
+        expect(endsWithAny("paulina", [])).to.equal(false)
+      })
+  
+      it('should return false if provided word is empty', function () {
+        expect(endsWithAny("", ["foo", "foo2"])).to.equal(false)
+      })
+    })
+    
+    describe('word is longer than provided number', function () {
+      it('should return true for word with length longer than provided value', function () {
+        expect(isLongerThan("paulina", 2)).to.equal(true)
+      })
+  
+      it('should return false for word with length longer equal to provided value', function () {
+        expect(isLongerThan("paulina", 7)).to.equal(false)
+      })
+  
+      it('should return false for word with length longer than provided value', function () {
+        expect(isLongerThan("paulina", 10)).to.equal(false)
+      })
     })
 
-    it('should return false if word suffix is not in provided list', function () {
-      expect(endsWithAny("paulina", ["foo"])).to.equal(false)
-    })
+    describe('remove suffix', function () {
+      it('should remove nothing if the length of suffix is 0', function () {
+        expect(removeSuffix("paulina", 0)).to.equal("paulina")
+      })
 
-    it('should return false if provided list is empty', function () {
-      expect(endsWithAny("paulina", [])).to.equal(false)
-    })
+      it('should return empty string if the length of suffix is longer than word', function () {
+        expect(removeSuffix("paulina", 10)).to.equal("")
+      })
 
-    it('should return false if provided word is empty', function () {
-      expect(endsWithAny("", ["foo", "foo2"])).to.equal(false)
-    })
+      it('should remove correct number of chars from the ending', function () {
+        expect(removeSuffix("paulina", 3)).to.equal("paul")
+      })
 
-    it('should return true for word with length longer than provided value', function () {
-      expect(isLongerThan("paulina", 2)).to.equal(true)
-    })
+      it('should return empty string if the word was empty', function () {
+        expect(removeSuffix("", 3)).to.equal("")
+      })
 
-    it('should return false for word with length longer equal to provided value', function () {
-      expect(isLongerThan("paulina", 7)).to.equal(false)
+      it('should return the same string if provided number was negative', function () {
+        expect(removeSuffix("paulina", -3)).to.equal("paulina")
+      })
     })
-
-    it('should return false for word with length longer than provided value', function () {
-      expect(isLongerThan("paulina", 10)).to.equal(false)
-    })
-
-    it('should remove nothing if the length of suffix is 0', function () {
-      expect(removeSuffix("paulina", 0)).to.equal("paulina")
-    })
-
-    it('should return empty string if the length of suffix is longer than word', function () {
-      expect(removeSuffix("paulina", 10)).to.equal("")
-    })
-
-    it('should return correct number of chars from the ending', function () {
-      expect(removeSuffix("paulina", 3)).to.equal("paul")
-    })
-
-    it('should return empty string if the word was empty', function () {
-      expect(removeSuffix("", 3)).to.equal("")
-    })
-
-    it('should return the same string if provided number was negative', function () {
-      expect(removeSuffix("paulina", -3)).to.equal("paulina")
+    
+    describe('remove prefix', function () {
+      it('should remove nothing if the length of prefix is 0', function () {
+        expect(removePrefix("paulina", 0)).to.equal("paulina")
+      })
+  
+      it('should return empty string if the length of prefix is longer than word', function () {
+        expect(removePrefix("paulina", 10)).to.equal("")
+      })
+  
+      it('should remove correct number of chars from the begining', function () {
+        expect(removePrefix("paulina", 3)).to.equal("lina")
+      })
+  
+      it('should return empty string if the word was empty', function () {
+        expect(removePrefix("", 3)).to.equal("")
+      })
+  
+      it('should return the same string if provided number was negative', function () {
+        expect(removePrefix("paulina", -3)).to.equal("paulina")
+      })
     })
   })
 })
