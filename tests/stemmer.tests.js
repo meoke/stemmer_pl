@@ -33,23 +33,23 @@ describe('stemmer end to end tests', function () {
     ['językach', 'język'],
     ['to', 'to'],
     ['wydarzenie', 'wydarz'],
-    ['zorganizowane', 'zorganizowa'],
+    ['zorganizowane', 'zorganizować'],
     ['z', 'z'],
     ['myślą', 'myśl'],
     ['o', 'o'],
     ['studentach', 'studen'],
     ['i', 'i'],
     ['absolwentach', 'absolwen'],
-    ['znających', 'zna'],
+    ['znających', 'znaj'],
     ['języki', 'język'],
     ['obce', 'obc'],
     ['na', 'na'],
     ['poziomie', 'poziom'],
     ['co', 'co'],
     ['najmniej', 'mniej'],
-    ['Będą', 'Będ'],
+    ['Będą', 'będ'],
     ['oni', 'oni'],
-    ['mieli', 'mie'],
+    ['mieli', 'mieć'],
     ['okazję', 'okazj'],
     ['zastanowić', 'zastanow'],
     ['się', 'się'],
@@ -66,15 +66,15 @@ describe('stemmer end to end tests', function () {
     ['na', 'na'],
     ['temat', 'temat'],
     ['możliwości', 'możliwoś'],
-    ['wykorzystania', 'wykorzysta'],
+    ['wykorzystania', 'wykorzyst'],
     ['swoich', 'swoich'],
-    ['umiejętności', 'umiejętności'],
-    ['lingwistycznych', 'lingiwistyc'],
+    ['umiejętności', 'umiejętnoś'],
+    ['lingwistycznych', 'lingwistyczn'],
     ['na', 'na'],
     ['współczesnym', 'współczesn'],
     ['rynku', 'rynk'],
     ['pracy', 'prac'],
-    ['dlatego', 'dlatego'],
+    ['dlatego', 'dlat'],
     ['też', 'też'],
     ['nie', 'nie'],
     ['chcę', 'chc'],
@@ -172,7 +172,9 @@ describe('prefixes and suffixes removal', function () {
       ['should remove "ych" from adjective > 5 chars', 'bajkowych', 'bajkow'],
       ['should remove "ego" from adjective > 5 chars', 'bajkowego', 'bajkow'],
 
-      ['should remove "ej" from adjective > 5 chars', 'stołecznej', 'stołeczn']
+      ['should remove "ej" from adjective > 5 chars', 'stołecznej', 'stołeczn'],
+
+      ['should remove "ym" from adjective > 5 chars', 'biernym', 'biern']
     ]
 
     for (const [description, fullWord, expectedWord] of testCases) {
@@ -214,6 +216,7 @@ describe('prefixes and suffixes removal', function () {
       ['should remove "ić" from verb > 3 chars', 'zrobić', 'zrob'],
       ['should remove "ąc" from verb > 3 chars', 'będąc', 'będ'],
 
+      ['should replace "eli" with "eć" in verb > 4', 'powiedzieli', 'powiedzieć'],
     ]
 
     for (const [description, fullWord, expectedWord] of testCases) {
@@ -231,6 +234,8 @@ describe('prefixes and suffixes removal', function () {
       ['should remove "ie" from adverb > 4 chars ending with "wie"', 'ckliwie', 'ckliw'],
       
       ['should remove "ze" from adverb > 4 chars ending with "rze"', 'dobrze', 'dobr'],
+
+      ['should replace "ane" with "ać" in adverb > 4 chars ending with "ane"', 'namalowane', 'namalować']
     ]
 
     for (const [description, fullWord, expectedWord] of testCases) {
@@ -247,7 +252,9 @@ describe('prefixes and suffixes removal', function () {
       ['should remove "ów" from plural nouns > 4 chars', 'chłopców', 'chłopc'],      
       ['should remove "om" from plural nouns > 4 chars', 'chłopcom', 'chłopc'],   
 
-      ['should remove "ami" from plural nouns > 4 chars', 'chłopcami', 'chłopc'],      
+      ['should remove "ami" from plural nouns > 4 chars', 'chłopcami', 'chłopc'],
+      
+      ['should remove "ci" from plural nouns > 4 chars ending with "ści"', 'gości', 'goś'],
     ]
 
     for (const [description, fullWord, expectedWord] of testCases) {
