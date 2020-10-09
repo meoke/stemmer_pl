@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { getStem, removeNouns, removeDiminutive, removeAdjectiveEnds, removeVerbsEnds, removeAdverbsEnds} from '../lib/stemmer'
+import { removeSuffix, removePrefix, getStem, removeNouns, removeDiminutive, removeAdjectiveEnds, removeVerbsEnds, removeAdverbsEnds, removePluralForms, removeGeneralSuffixes, endsWithAny, isLongerThan} from '../lib/stemmer'
 // import getStem from '../lib/stemmer'
 
 describe('stemmer end to end tests', function () {
@@ -238,5 +238,95 @@ describe('prefixes and suffixes removal', function () {
         expectWord(fullWord, expectedWord)
       })
     }
+  })
+
+  describe('plural forms removal', function () {
+    const expectWord = (fullWord, expectedWord) => expect(removePluralForms(fullWord)).to.equal(expectedWord)
+
+    const testCases = [     
+      ['should remove "ów" from plural nouns > 4 chars', 'chłopców', 'chłopc'],      
+      ['should remove "om" from plural nouns > 4 chars', 'chłopcom', 'chłopc'],   
+
+      ['should remove "ami" from plural nouns > 4 chars', 'chłopcami', 'chłopc'],      
+    ]
+
+    for (const [description, fullWord, expectedWord] of testCases) {
+      it(description, function () {
+        expectWord(fullWord, expectedWord)
+      })
+    }
+  })
+
+  describe('general suffixes removal', function () {
+    const expectWord = (fullWord, expectedWord) => expect(removeGeneralSuffixes(fullWord)).to.equal(expectedWord)
+
+    const testCases = [     
+      ['should remove "ia" from words > 4 chars', 'brania', 'bran'],      
+      ['should remove "ie" from words > 4 chars', 'branie', 'bran'],   
+
+      ['should remove "u" from words > 4 chars', 'trudu', 'trud'],      
+      ['should remove "ą" from words > 4 chars', 'gwardią', 'gwardi'],      
+      ['should remove "i" from words > 4 chars', 'fajni', 'fajn'],      
+      ['should remove "a" from words > 4 chars', 'fajna', 'fajn'],      
+      ['should remove "ę" from words > 4 chars', 'biorę', 'bior'],      
+      ['should remove "y" from words > 4 chars', 'lubiły', 'lubił'],      
+      ['should remove "ł" from words > 4 chars', 'pobił', 'pobi'],      
+    ]
+
+    for (const [description, fullWord, expectedWord] of testCases) {
+      it(description, function () {
+        expectWord(fullWord, expectedWord)
+      })
+    }
+  })
+
+  describe('tools', function () {
+    it('should return true if word suffix is in provided list', function () {
+      expect(endsWithAny("paulina", ["na"])).to.equal(true)
+    })
+
+    it('should return false if word suffix is not in provided list', function () {
+      expect(endsWithAny("paulina", ["foo"])).to.equal(false)
+    })
+
+    it('should return false if provided list is empty', function () {
+      expect(endsWithAny("paulina", [])).to.equal(false)
+    })
+
+    it('should return false if provided word is empty', function () {
+      expect(endsWithAny("", ["foo", "foo2"])).to.equal(false)
+    })
+
+    it('should return true for word with length longer than provided value', function () {
+      expect(isLongerThan("paulina", 2)).to.equal(true)
+    })
+
+    it('should return false for word with length longer equal to provided value', function () {
+      expect(isLongerThan("paulina", 7)).to.equal(false)
+    })
+
+    it('should return false for word with length longer than provided value', function () {
+      expect(isLongerThan("paulina", 10)).to.equal(false)
+    })
+
+    it('should remove nothing if the length of suffix is 0', function () {
+      expect(removeSuffix("paulina", 0)).to.equal("paulina")
+    })
+
+    it('should return empty string if the length of suffix is longer than word', function () {
+      expect(removeSuffix("paulina", 10)).to.equal("")
+    })
+
+    it('should return correct number of chars from the ending', function () {
+      expect(removeSuffix("paulina", 3)).to.equal("paul")
+    })
+
+    it('should return empty string if the word was empty', function () {
+      expect(removeSuffix("", 3)).to.equal("")
+    })
+
+    it('should return the same string if provided number was negative', function () {
+      expect(removeSuffix("paulina", -3)).to.equal("paulina")
+    })
   })
 })
