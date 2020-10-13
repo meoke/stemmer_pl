@@ -98,5 +98,79 @@ describe('porter functions tests', function () {
         })
     })
 
+    describe('check prefix rules', function () {
+        it('should return true if prefix and length is satisfied', function () {
+            expect(porter.isSatisfiedPrefix(new porter.Rule(5, ["pa"]), "paulina")).to.equal(true)
+        })
+        it('should return false if prefix is present but the word is too short', function () {
+            expect(porter.isSatisfiedPrefix(new porter.Rule(15, ["pa"]), "paulina")).to.equal(false)
+        })
+        it('should return false if length is satisfied but prefix is not present', function () {
+            expect(porter.isSatisfiedPrefix(new porter.Rule(5, ["ina"]), "paulina")).to.equal(false)
+        })
+        it('should return false if both prefix and length are not satisfied', function () {
+            expect(porter.isSatisfiedPrefix(new porter.Rule(25, ["foo"]), "paulina")).to.equal(false)
+        })
+    })
 
+    describe('check suffix rules', function () {
+        it('should return true if suffix and length is satisfied', function () {
+            expect(porter.isSatisfiedSuffix(new porter.Rule(5, ["a"]), "paulina")).to.equal(true)
+        })
+        it('should return false if suffix is present but the word is too short', function () {
+            expect(porter.isSatisfiedSuffix(new porter.Rule(15, ["na"]), "paulina")).to.equal(false)
+        })
+        it('should return false if suffix is satisfied but prefix is not present', function () {
+            expect(porter.isSatisfiedSuffix(new porter.Rule(5, ["foo"]), "paulina")).to.equal(false)
+        })
+        it('should return false if suffix prefix and length are not satisfied', function () {
+            expect(porter.isSatisfiedSuffix(new porter.Rule(25, ["foo"]), "paulina")).to.equal(false)
+        })
+    })
+
+    describe('check prefix length', function () {
+        it('should return correct length if prefix is present in word', function () {
+            expect(porter.getPrefixToRemoveLength("paulina", [new porter.Rule(5, ["p"], 1)])).to.equal(1)
+        })
+        it('should return 0 if prefix is not present in word', function () {
+            expect(porter.getPrefixToRemoveLength("paulina", [new porter.Rule(5, ["d"], 1)])).to.equal(0)
+        })
+    })
+
+    describe('check suffix length', function () {
+        it('should return correct length if suffix is present in word', function () {
+            expect(porter.getSuffixToRemoveLength("paulina", [new porter.Rule(5, ["ina"], 2)])).to.equal(2)
+        })
+        it('should return 0 if suffix is not present in word', function () {
+            expect(porter.getSuffixToRemoveLength("paulina", [new porter.Rule(5, ["d"], 1)])).to.equal(0)
+        })
+    })
+
+    describe('apply prefix rule', function () {
+        it('should return the same word is no rule is provided', function () {
+            expect(porter.applyPrefixRules([], "paulina")).to.equal("paulina")
+        })
+
+        it('should return the same word is rule is not satisified', function () {
+            expect(porter.applyPrefixRules([new porter.Rule(10, ["x"], 2)], "paulina")).to.equal("paulina")
+        })
+
+        it('should cut prefix according to the satisfied rule', function () {
+            expect(porter.applyPrefixRules([new porter.Rule(2, ["pa"], 2)], "paulina")).to.equal("ulina")
+        })
+    })
+
+    describe('apply suffix rule', function () {
+        it('should return the same word is no rule is provided', function () {
+            expect(porter.applySuffixRules([], "paulina")).to.equal("paulina").to.equal("paulina")
+        })
+
+        it('should return the same word is rule is not satisified', function () {
+            expect(porter.applySuffixRules([new porter.Rule(10, ["x"], 2)], "paulina")).to.equal("paulina")
+        })
+
+        it('should cut suffix according to the satisfied rule', function () {
+            expect(porter.applySuffixRules([new porter.Rule(2, ["ina"], 4)], "paulina")).to.equal("pau")
+        })
+    })
 })
