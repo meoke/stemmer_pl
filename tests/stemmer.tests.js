@@ -1,7 +1,20 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { removeSuffix, removePrefix, getStem, removeNouns, removeDiminutive, removeAdjectiveEnds, removeVerbsEnds, removeAdverbsEnds, removePluralForms, removeGeneralSuffixes, endsWithAny, isLongerThan} from '../lib/stemmer'
-// import getStem from '../lib/stemmer'
+var rewire = require("rewire");
+var stemmerLib = rewire('../lib/stemmer.js');
+
+const getStem = stemmerLib.__get__('getStem')
+const removeSuffix = stemmerLib.__get__('removeSuffix')
+const removePrefix = stemmerLib.__get__('removePrefix')
+const removeNouns = stemmerLib.__get__('removeNouns')
+const removeDiminutive = stemmerLib.__get__('removeDiminutive')
+const removeAdjectiveEnds = stemmerLib.__get__('removeAdjectiveEnds')
+const removeVerbsEnds = stemmerLib.__get__('removeVerbsEnds')
+const removeAdverbsEnds = stemmerLib.__get__('removeAdverbsEnds')
+const removePluralForms = stemmerLib.__get__('removePluralForms')
+const removeGeneralSuffixes = stemmerLib.__get__('removeGeneralSuffixes')
+const endsWithAny = stemmerLib.__get__('endsWithAny')
+const isLongerThan = stemmerLib.__get__('isLongerThan')
 
 describe('stemmer end to end tests', function () {
   describe('returns the identical word if the given word is its stem', function() {
