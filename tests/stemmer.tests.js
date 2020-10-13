@@ -1,20 +1,17 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-var rewire = require("rewire");
-var stemmerLib = rewire('../lib/stemmer.js');
 
-const getStem = stemmerLib.__get__('getStem')
-const removeSuffix = stemmerLib.__get__('removeSuffix')
-const removePrefix = stemmerLib.__get__('removePrefix')
-const removeNouns = stemmerLib.__get__('removeNouns')
-const removeDiminutive = stemmerLib.__get__('removeDiminutive')
-const removeAdjectiveEnds = stemmerLib.__get__('removeAdjectiveEnds')
-const removeVerbsEnds = stemmerLib.__get__('removeVerbsEnds')
-const removeAdverbsEnds = stemmerLib.__get__('removeAdverbsEnds')
-const removePluralForms = stemmerLib.__get__('removePluralForms')
-const removeGeneralSuffixes = stemmerLib.__get__('removeGeneralSuffixes')
-const endsWithAny = stemmerLib.__get__('endsWithAny')
-const isLongerThan = stemmerLib.__get__('isLongerThan')
+var rewire = require("rewire");
+var stemmer = rewire('../lib/stemmer.js');
+
+const getStem = stemmer.__get__('getStem')
+const removeNounAffix = stemmer.__get__('removeNounAffix')
+const removeDiminutiveAffix = stemmer.__get__('removeDiminutiveAffix')
+const removeAdjectiveAffix = stemmer.__get__('removeAdjectiveAffix')
+const removeVerbAffix = stemmer.__get__('removeVerbAffix')
+const removeAdverbAffix = stemmer.__get__('removeAdverbAffix')
+const removePluralFormAffix = stemmer.__get__('removePluralFormAffix')
+const removeGeneralAffix = stemmer.__get__('removeGeneralAffix')
 
 describe('stemmer end to end tests', function () {
   describe('returns the identical word if the given word is its stem', function() {
@@ -46,7 +43,7 @@ describe('stemmer end to end tests', function () {
     ['językach', 'język'],
     ['to', 'to'],
     ['wydarzenie', 'wydarz'],
-    ['zorganizowane', 'zorganizować'],
+    ['zorganizowane', 'zorganizow'],
     ['z', 'z'],
     ['myślą', 'myśl'],
     ['o', 'o'],
@@ -62,7 +59,7 @@ describe('stemmer end to end tests', function () {
     ['najmniej', 'mniej'],
     ['Będą', 'będ'],
     ['oni', 'oni'],
-    ['mieli', 'mieć'],
+    ['mieli', 'mie'],
     ['okazję', 'okazj'],
     ['zastanowić', 'zastanow'],
     ['się', 'się'],
@@ -103,7 +100,7 @@ describe('stemmer end to end tests', function () {
 
 describe('prefixes and suffixes removal', function () {
   describe('noun suffixes removal', function () {
-    const expectWord = (fullWord, withoutSuffix) => expect(removeNouns(fullWord)).to.equal(withoutSuffix)
+    const expectWord = (fullWord, withoutSuffix) => expect(removeNounAffix(fullWord)).to.equal(withoutSuffix)
 
     const testCases = [
       ['should remove "acja" from noun > 7 chars', 'organizacja', 'organiz'],
@@ -144,7 +141,7 @@ describe('prefixes and suffixes removal', function () {
   })
 
   describe('noun diminutives removal', function () {
-    const expectWord = (fullWord, withoutSuffix) => expect(removeDiminutive(fullWord)).to.equal(withoutSuffix)
+    const expectWord = (fullWord, withoutSuffix) => expect(removeDiminutiveAffix(fullWord)).to.equal(withoutSuffix)
 
     const testCases = [     
       ['should remove "eczek" from noun > 6 chars', 'stołeczek', 'stoł'],
@@ -169,7 +166,7 @@ describe('prefixes and suffixes removal', function () {
   })
 
   describe('adjective prefix and suffix removal', function () {
-    const expectWord = (fullWord, expectedWord) => expect(removeAdjectiveEnds(fullWord)).to.equal(expectedWord)
+    const expectWord = (fullWord, expectedWord) => expect(removeAdjectiveAffix(fullWord)).to.equal(expectedWord)
 
     const testCases = [     
       ['should remove "naj" and "sze" from adjective > 7 chars', 'najlepsze', 'lep'],
@@ -198,7 +195,7 @@ describe('prefixes and suffixes removal', function () {
   })
 
   describe('verb suffix removal', function () {
-    const expectWord = (fullWord, expectedWord) => expect(removeVerbsEnds(fullWord)).to.equal(expectedWord)
+    const expectWord = (fullWord, expectedWord) => expect(removeVerbAffix(fullWord)).to.equal(expectedWord)
 
     const testCases = [     
       ['should remove "bym" from verb > 5 chars', 'zrobiłbym', 'zrobił'],
@@ -229,7 +226,7 @@ describe('prefixes and suffixes removal', function () {
       ['should remove "ić" from verb > 3 chars', 'zrobić', 'zrob'],
       ['should remove "ąc" from verb > 3 chars', 'będąc', 'będ'],
 
-      ['should replace "eli" with "eć" in verb > 4', 'powiedzieli', 'powiedzieć'],
+      ['should replace "eli" with "eć" in verb > 4', 'powiedzieli', 'powiedzie'],
     ]
 
     for (const [description, fullWord, expectedWord] of testCases) {
@@ -240,7 +237,7 @@ describe('prefixes and suffixes removal', function () {
   })
 
   describe('adverb suffix removal', function () {
-    const expectWord = (fullWord, expectedWord) => expect(removeAdverbsEnds(fullWord)).to.equal(expectedWord)
+    const expectWord = (fullWord, expectedWord) => expect(removeAdverbAffix(fullWord)).to.equal(expectedWord)
 
     const testCases = [     
       ['should remove "ie" from adverb > 4 chars ending with "nie"', 'grzecznie', 'grzeczn'],
@@ -248,7 +245,7 @@ describe('prefixes and suffixes removal', function () {
       
       ['should remove "ze" from adverb > 4 chars ending with "rze"', 'dobrze', 'dobr'],
 
-      ['should replace "ane" with "ać" in adverb > 4 chars ending with "ane"', 'namalowane', 'namalować']
+      ['should replace "ane" with "ać" in adverb > 4 chars ending with "ane"', 'namalowane', 'namalowa']
     ]
 
     for (const [description, fullWord, expectedWord] of testCases) {
@@ -259,7 +256,7 @@ describe('prefixes and suffixes removal', function () {
   })
 
   describe('plural forms removal', function () {
-    const expectWord = (fullWord, expectedWord) => expect(removePluralForms(fullWord)).to.equal(expectedWord)
+    const expectWord = (fullWord, expectedWord) => expect(removePluralFormAffix(fullWord)).to.equal(expectedWord)
 
     const testCases = [     
       ['should remove "ów" from plural nouns > 4 chars', 'chłopców', 'chłopc'],      
@@ -278,7 +275,7 @@ describe('prefixes and suffixes removal', function () {
   })
 
   describe('general suffixes removal', function () {
-    const expectWord = (fullWord, expectedWord) => expect(removeGeneralSuffixes(fullWord)).to.equal(expectedWord)
+    const expectWord = (fullWord, expectedWord) => expect(removeGeneralAffix(fullWord)).to.equal(expectedWord)
 
     const testCases = [     
       ['should remove "ia" from words > 4 chars', 'brania', 'bran'],      
@@ -300,81 +297,5 @@ describe('prefixes and suffixes removal', function () {
     }
   })
 
-  describe('tools', function () {
-    describe('ends with any of the provided suffixes', function() {
-      it('should return true if word suffix is in provided list', function () {
-        expect(endsWithAny("paulina", ["na"])).to.equal(true)
-      })
   
-      it('should return false if word suffix is not in provided list', function () {
-        expect(endsWithAny("paulina", ["foo"])).to.equal(false)
-      })
-  
-      it('should return false if provided list is empty', function () {
-        expect(endsWithAny("paulina", [])).to.equal(false)
-      })
-  
-      it('should return false if provided word is empty', function () {
-        expect(endsWithAny("", ["foo", "foo2"])).to.equal(false)
-      })
-    })
-    
-    describe('word is longer than provided number', function () {
-      it('should return true for word with length longer than provided value', function () {
-        expect(isLongerThan("paulina", 2)).to.equal(true)
-      })
-  
-      it('should return false for word with length longer equal to provided value', function () {
-        expect(isLongerThan("paulina", 7)).to.equal(false)
-      })
-  
-      it('should return false for word with length longer than provided value', function () {
-        expect(isLongerThan("paulina", 10)).to.equal(false)
-      })
-    })
-
-    describe('remove suffix', function () {
-      it('should remove nothing if the length of suffix is 0', function () {
-        expect(removeSuffix("paulina", 0)).to.equal("paulina")
-      })
-
-      it('should return empty string if the length of suffix is longer than word', function () {
-        expect(removeSuffix("paulina", 10)).to.equal("")
-      })
-
-      it('should remove correct number of chars from the ending', function () {
-        expect(removeSuffix("paulina", 3)).to.equal("paul")
-      })
-
-      it('should return empty string if the word was empty', function () {
-        expect(removeSuffix("", 3)).to.equal("")
-      })
-
-      it('should return the same string if provided number was negative', function () {
-        expect(removeSuffix("paulina", -3)).to.equal("paulina")
-      })
-    })
-    
-    describe('remove prefix', function () {
-      it('should remove nothing if the length of prefix is 0', function () {
-        expect(removePrefix("paulina", 0)).to.equal("paulina")
-      })
-  
-      it('should return empty string if the length of prefix is longer than word', function () {
-        expect(removePrefix("paulina", 10)).to.equal("")
-      })
-  
-      it('should remove correct number of chars from the begining', function () {
-        expect(removePrefix("paulina", 3)).to.equal("lina")
-      })
-  
-      it('should return empty string if the word was empty', function () {
-        expect(removePrefix("", 3)).to.equal("")
-      })
-  
-      it('should return the same string if provided number was negative', function () {
-        expect(removePrefix("paulina", -3)).to.equal("paulina")
-      })
-    })
-  })
 })
