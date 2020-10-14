@@ -1,7 +1,7 @@
 {
-  "name": "my-awesome-package",
-  "version": "1.0.1",
-  "description": "Look at this great package. Lots of stuff.",
+  "name": "stemmer_pl",
+  "version": "1.0.0",
+  "description": "Stemmer for Polish language. It is based on Porter's stemming algoritm.",
   "main": "dist/index.js",
   "scripts": {
     "lint": "cd ./lib && standard | snazzy",
@@ -35,20 +35,20 @@
   "targets": "> 0.25%, not dead",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/jankapunkt/npm-package-template.git"
+    "url": "https://github.com/meoke/stemmer_pl.git"
   },
   "keywords": [
-    "awesome",
-    "cool",
-    "great",
-    "swag"
+    "stemmer",
+    "porter",
+    "nlp",
+    "polish"
   ],
-  "author": "Jan Küster",
+  "author": "Paulina Dziadkiewicz",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jankapunkt/npm-package-template/issues"
+    "url": "https://github.com/meoke/stemmer_pl/issues"
   },
-  "homepage": "https://github.com/jankapunkt/npm-package-template#readme",
+  "homepage": "https://github.com/meoke/stemmer_pl/blob/master/README.md",
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
@@ -65,10 +65,5 @@
     "rewire": "^5.0.0",
     "snazzy": "^8.0.0",
     "standard": "^14.3.3"
-  },
-  "standard": {
-    "ignore": [
-      "/docs/*"
-    ]
   }
 }
