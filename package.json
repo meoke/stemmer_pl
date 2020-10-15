@@ -1,6 +1,6 @@
 {
   "name": "stemmer_pl",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Stemmer for Polish language. It is based on Porter's stemming algoritm.",
   "main": "dist/index.js",
   "files": [
