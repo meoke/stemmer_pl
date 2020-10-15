@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
 var rewire = require("rewire");
-var stemmer = rewire('../lib/stemmer.js');
+var stemmer = rewire('../lib/stemmer_pl.js');
 
 const getStem = stemmer.__get__('getStem')
 const removeNounAffix = stemmer.__get__('removeNounAffix')
